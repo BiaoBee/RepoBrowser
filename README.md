@@ -44,6 +44,22 @@ RepoBrowser is an iPhone app that makes it easy to browse GitHub repositories. W
    - Access your saved repositories from the Bookmarks tab.
    - Remove bookmarks by tapping the `Unbookmark` button.
 
+## Code Structure
+
+The project is organized into several main directories:
+
+- **RepoBrowser/**  
+  The main app target, containing all core source files.
+  - `ContentView.swift`, `RepoBrowserApp.swift`: App entry points and main UI setup.
+  - **BookmarkStorage/**: Bookmark storage entiry.
+  - **Networking/**: Networking abstractions and protocols.
+  - **Services/**: Models and services for fetching and decoding repository data.
+  - **Views/**: All SwiftUI views, organized by feature:
+    - **BookmarksView/**: UI for displaying and managing bookmarks.
+    - **ExploreView/**: UI and logic for exploring repositories, including filters and infinite scroll.
+    - **RepoDetailView/**: UI for repository details.
+    - **Shared/**: Reusable UI components (e.g., avatar, bookmark toggle).
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.

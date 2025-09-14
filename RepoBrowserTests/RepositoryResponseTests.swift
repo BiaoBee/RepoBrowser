@@ -19,7 +19,7 @@ class RepositoryResponseTests {
     }
     
     @Test("Decoding RepositoryFailureResponse") func decodeRepositoryFailureResponse() throws {
-        let responseData = try #require(testData(fileName: "RepositoryResponse", extension: "json"))
+        let responseData = try #require(testData(fileName: "RepositoryFailureResponse", extension: "json"))
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let decodedResponse = try decoder.decode(RepositoryFailureResponse.self, from: responseData)
