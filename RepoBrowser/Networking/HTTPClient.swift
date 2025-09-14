@@ -8,7 +8,7 @@
 import Foundation
 
 // Errors when using the HTTP client.
-enum HTTPClientError: LocalizedError {
+enum HTTPClientError: LocalizedError, Equatable {
     /// A network-level failure occurred (e.g., no internet, timeout).
     case networkFailure(String)
     /// An server error has occurred (5xx).
@@ -24,6 +24,19 @@ enum HTTPClientError: LocalizedError {
             return "Server error - \(message ?? "An unknown server error occurred.")"
         case .clientError(let message):
             return "Client error - \(message ?? "An unknown client error occurred.")"
+        }
+    }
+    
+    static func == (lhs: HTTPClientError, rhs: HTTPClientError) -> Bool {
+        switch (lhs, rhs) {
+        case let (.networkFailure(m1), .networkFailure(m2)):
+            return m1 == m2
+        case let (.serverError(m1), .serverError(m2)):
+            return m1 == m2
+        case let (.clientError(m1), .clientError(m2)):
+            return m1 == m2
+        default:
+            return false
         }
     }
 }

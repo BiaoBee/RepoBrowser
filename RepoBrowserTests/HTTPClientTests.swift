@@ -39,50 +39,30 @@ struct HTTPClientTests {
     @Test("Client error throws HTTPClientError.clientError") func testClientError() async throws {
         let response = HTTPURLResponse(url: validURL, statusCode: 404, httpVersion: nil, headerFields: nil)!
         let mockSession = MockURLSession(result: .success((failureData, response)))
+        
         let client = HTTPClient(urlSession: mockSession)
-        do {
+        async #expect(throws: HTTPClientError.clientError("fail"), performing: {
             _ = try await client.sendRequest(URLRequest(url: validURL))
-            #expect(false, "Expected HTTPClientError.clientError")
-        } catch let error as HTTPClientError {
-            switch error {
-            case .clientError(let message):
-                #expect(message == "fail")
-            default:
-                #expect(false, "Expected clientError, got \(error)")
-            }
-        }
+        })
     }
 
     @Test("Server error throws HTTPClientError.serverError") func testServerError() async throws {
         let response = HTTPURLResponse(url: validURL, statusCode: 500, httpVersion: nil, headerFields: nil)!
         let mockSession = MockURLSession(result: .success((failureData, response)))
-        let client = HTTPClient(urlSession: mockSession as! URLSession)
-        do {
+        let client = HTTPClient(urlSession: mockSession)
+        
+        async #expect(throws: HTTPClientError.clientError("fail"), performing: {
             _ = try await client.sendRequest(URLRequest(url: validURL))
-            #expect(false, "Expected HTTPClientError.serverError")
-        } catch let error as HTTPClientError {
-            switch error {
-            case .serverError(let message):
-                #expect(message == "fail")
-            default:
-                #expect(false, "Expected serverError, got \(error)")
-            }
-        }
+        })
     }
 
     @Test("Network error throws HTTPClientError.networkFailure") func testNetworkFailure() async throws {
-        let mockSession = MockURLSession(result: .failure(NSError(domain: "Test", code: -1009)))
-        let client = HTTPClient(urlSession: mockSession as! URLSession)
-        do {
+        let error = NSError(domain: "Test", code: -1009)
+        let mockSession = MockURLSession(result: .failure(error))
+        let client = HTTPClient(urlSession: mockSession)
+        
+        async #expect(throws: HTTPClientError.networkFailure(error.localizedDescription), performing: {
             _ = try await client.sendRequest(URLRequest(url: validURL))
-            #expect(false, "Expected HTTPClientError.networkFailure")
-        } catch let error as HTTPClientError {
-            switch error {
-            case .networkFailure:
-                #expect(true)
-            default:
-                #expect(false, "Expected networkFailure, got \(error)")
-            }
-        }
+        })
     }
 }
