@@ -7,79 +7,71 @@
 
 import Foundation
 
-/// Errors you might run into when fetching repositories from GitHub.
+/// Errors when fetching repositories.
 enum RepositoryError: Error, LocalizedError, Equatable {
-    /// The GitHub API URL is invalid.
+    /// The URL is invalid.
     case invalidURL
-    /// Something went wrong with the network.
-    case networkFailure(Error)
-    /// Couldn't decode the server's response.
+    /// Unable to fetch repositories, with an associated error message.
+    case unableToFetchRepositories(String)
+    /// Failed to decode the response.
     case decodingFailure(Error)
-    /// Access was denied (like hitting a rate limit).
-    case forbidden(String?)
-    
-    /// A user-friendly description of the error.
+
     var errorDescription: String? {
         switch self {
         case .invalidURL:
             return "The GitHub API URL is invalid."
-        case .networkFailure(let underlyingError):
-            return "Network error: \(underlyingError.localizedDescription)"
-        case .decodingFailure(let underlyingError):
-            return "Failed to decode the server response: \(underlyingError.localizedDescription)"
-        case .forbidden(let message):
-            return message ?? "Access forbidden (403)"
+        case .unableToFetchRepositories(let message):
+            return "Unable to fetch repositories: \(message)"
+        case .decodingFailure(let error):
+            return "Failed to decode the server response: \(error.localizedDescription)"
         }
     }
-    
+
     static func == (lhs: RepositoryError, rhs: RepositoryError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidURL, .invalidURL):
             return true
-        case let (.networkFailure(e1), .networkFailure(e2)):
-            return e1.localizedDescription == e2.localizedDescription
+        case let (.unableToFetchRepositories(m1), .unableToFetchRepositories(m2)):
+            return m1 == m2
         case let (.decodingFailure(e1), .decodingFailure(e2)):
             return e1.localizedDescription == e2.localizedDescription
-        case let (.forbidden(m1), .forbidden(m2)):
-            return m1 == m2
         default:
             return false
         }
     }
 }
 
-/// A protocol for anything that fetches repositories.
+/// Abstraction layer of the repository service.
 protocol RepositoryServiceProtocol {
-    /// Fetch repositories from GitHub using filters and pagination.
+    /// Fetch repositories from server .
     /// - Parameters:
     ///   - filters: Filter options for the search.
     ///   - page: Which page of results to get.
     ///   - perPage: How many results per page.
-    /// - Returns: An array of repositories.
-    /// - Throws: A `RepositoryError` if something goes wrong.
+    /// - Returns: An list of repositories.
+    /// - Throws: A `RepositoryError`.
     func fetchRepositories(filters: [AnyFilterOption],
                            page: UInt,
                            perPage: UInt) async throws -> [Repository]
 }
 
-/// The service that talks to GitHub to fetch repositories.
+/// The repository service.
 class RepositoryService: RepositoryServiceProtocol {
-    /// The session used for network requests (can be swapped out for testing).
-    var urlSession: URLSessionProtocol = URLSession.shared
-    /// The GitHub API endpoint for searching repositories.
+    /// The session used for network requests.
+    var httpClient: HTTPClientProtocol = HTTPClient(urlSession: URLSession.shared)
+    /// The API endpoint for searching repositories.
     var repositoryEndpoint: String = "https://api.github.com/search/repositories"
-    
-    /// Make a new RepositoryService. You can pass in your own session or endpoint if you want.
-    init(urlSession: URLSessionProtocol? = nil, repositoryEndpoint: String? = nil) {
-        if let urlSession {
-            self.urlSession = urlSession
+
+    init(httpClient: HTTPClientProtocol? = nil, repositoryEndpoint: String? = nil) {
+        if let httpClient {
+            self.httpClient = httpClient
         }
         if let repositoryEndpoint {
             self.repositoryEndpoint = repositoryEndpoint
         }
     }
     
-    /// Fetch repositories from GitHub using the given filters and pagination.
+    /// Fetch repositories from server with the given filters and pagination.
     func fetchRepositories(filters: [AnyFilterOption],
                            page: UInt,
                            perPage: UInt) async throws -> [Repository] {
@@ -94,32 +86,17 @@ class RepositoryService: RepositoryServiceProtocol {
             URLQueryItem(name: "per_page", value: "\(perPage)")
         ])
         
-        // Make the network request
+        // Perform the network request
         let responseData: Data
-        let urlResponse: URLResponse
         do {
             let request = URLRequest(url: url)
-            (responseData, urlResponse) = try await urlSession.data(for: request)
+            responseData = try await httpClient.sendRequest(request)
         } catch {
-            throw RepositoryError.networkFailure(error)
+            throw RepositoryError.unableToFetchRepositories(error.localizedDescription)
         }
         
-        // Check the HTTP response
-        if let httpResponse = urlResponse as? HTTPURLResponse {
-            switch httpResponse.statusCode {
-            case 403:
-                let message = try? JSONDecoder().decode(RepositoryFailureResponse.self, from: responseData).message
-                throw RepositoryError.forbidden(message)
-            case 200...299:
-                break
-            default:
-                throw RepositoryError.networkFailure(
-                    NSError(domain: "RepositoryService", code: httpResponse.statusCode)
-                )
-            }
-        }
         
-        // Try to decode the response
+        // Decode response
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         do {

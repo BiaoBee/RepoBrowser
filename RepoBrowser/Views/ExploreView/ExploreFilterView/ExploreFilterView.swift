@@ -32,14 +32,14 @@ struct ExploreFilterView: View {
             .padding()
             .navigationTitle("Filters")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button {
                         filters.forEach { $0.resetToDefault() }
                     } label: {
                         Text("Reset")
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         dismiss()
                         onComplete()

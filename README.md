@@ -16,8 +16,8 @@ RepoBrowser is an iPhone app that makes it easy to browse GitHub repositories. W
 
 ### Prerequisites
 
-- Xcode 13 or later
-- iOS 15.0 or later
+- Xcode 16.3 or later
+- iOS 17.0 or later
 
 ### Installation
 

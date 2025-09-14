@@ -160,7 +160,7 @@ final class ExploreViewModel {
             currentPage = page
             errorMessage = nil
         } catch {
-            errorMessage = "❗️:" + error.localizedDescription
+            errorMessage = "❗️" + error.localizedDescription
         }
     }
 }

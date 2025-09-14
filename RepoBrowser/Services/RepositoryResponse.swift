@@ -7,14 +7,14 @@
 
 import Foundation
 
-/// Represents a successful response from the GitHub repositories search API.
+/// Represents a successful response.
 struct RepositoryResponse: Codable {
-    /// The list of repositories returned by the API.
+    /// The repositories.
     let items: [Repository]
 }
 
-/// Represents an error response from the GitHub API.
+/// Represents an error response.
 struct RepositoryFailureResponse: Codable {
-    /// The error message returned by the API.
+    /// The error message.
     let message: String
 }
