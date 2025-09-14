@@ -7,17 +7,22 @@
 
 import Foundation
 
+/// A protocol for filter options used in repository search.
 protocol FilterOption: RawRepresentable where RawValue == String {
+    /// The display name of the filter option.
     var name: String { get }
+    /// The query fragment to use in the GitHub API request.
     var queryFragment: String? { get }
 }
 
 extension FilterOption {
+    /// By default, the name is just the raw value, to enable enum-based options.
     var name: String {
         rawValue
     }
 }
 
+/// Filter options for the number of stars a repository has.
 enum StarsOption: String, FilterOption, CaseIterable {
     case all = "All"
     case new = "New(⭐0–50)"
@@ -25,6 +30,7 @@ enum StarsOption: String, FilterOption, CaseIterable {
     case popular = "Popular(⭐501–5,000)"
     case trending = "Trending(⭐ 5,000+)"
     
+    /// The query fragment for the stars filter.
     var queryFragment: String? {
         switch self {
         case .new: 
@@ -41,6 +47,7 @@ enum StarsOption: String, FilterOption, CaseIterable {
     }
 }
 
+/// Filter options for the programming language of a repository.
 enum LanguageOption: String, FilterOption, CaseIterable {
     case all = "All"
     case javaScript = "JavaScript"
@@ -50,6 +57,7 @@ enum LanguageOption: String, FilterOption, CaseIterable {
     case java = "Java"
     case swift = "Swift"
     
+    /// The query fragment for the language filter.
     var queryFragment: String? {
         if self == .all {
             return nil
@@ -58,6 +66,7 @@ enum LanguageOption: String, FilterOption, CaseIterable {
     }
 }
 
+/// Filter options for the license of a repository.
 enum LicenseOption: String, FilterOption, CaseIterable {
     case all = "All"
     case mit = "MIT"
@@ -66,6 +75,7 @@ enum LicenseOption: String, FilterOption, CaseIterable {
     case bsd3clause = "BSD-3-Clause"
     case mpl2_0 = "MPL-2.0"
     
+    /// The query fragment for the license filter.
     var queryFragment: String? {
         if self == .all {
             return nil

@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class RepositoryOwner {
+class RepositoryOwner: Equatable {
     @Attribute(.unique)
     var login: String
     var avatarUrl: URL
@@ -18,15 +18,24 @@ class RepositoryOwner {
         self.login = owner.login
         self.avatarUrl = owner.avatarUrl
     }
+    
+    static func == (lhs: RepositoryOwner, rhs: RepositoryOwner) -> Bool {
+        lhs.login == rhs.login &&
+        lhs.avatarUrl == rhs.avatarUrl
+    }
 }
 
 @Model
-class RepositoryTopic {
+class RepositoryTopic: Equatable  {
     @Attribute(.unique)
     var topic: String
     
     init(_ topic: String) {
         self.topic = topic
+    }
+    
+    static func == (lhs: RepositoryTopic, rhs: RepositoryTopic) -> Bool {
+        lhs.topic == rhs.topic
     }
 }
 
@@ -38,7 +47,6 @@ class RepositoryBookmark {
     var fullName: String
     var desc: String?
     var stargazersCount: Int
-    var forksCount: Int
     var language: String?
     var topics: [RepositoryTopic]
     
@@ -53,7 +61,6 @@ class RepositoryBookmark {
         self.fullName = repo.fullName
         self.desc = repo.description
         self.stargazersCount = repo.stargazersCount
-        self.forksCount = repo.forksCount
         self.language = repo.language
         self.topics = repo.topics.map { RepositoryTopic($0) }
         self.owner = RepositoryOwner(repo.owner)
@@ -69,7 +76,6 @@ extension Repository {
                   fullName: bookmark.fullName,
                   description: bookmark.desc,
                   stargazersCount: bookmark.stargazersCount,
-                  forksCount: bookmark.forksCount,
                   language: bookmark.language,
                   topics: bookmark.topics.map { $0.topic },
                   owner: Owner(login: bookmark.owner.login,

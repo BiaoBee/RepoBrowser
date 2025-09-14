@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-import SwiftUI
-
+/// A view modifier that runs an action only the first time the view appears.
 struct OnFirstAppear: ViewModifier {
     @State private var hasAppeared = false
+    /// The action to perform on the first appearance.
     let action: () -> Void
     
     func body(content: Content) -> some View {
@@ -25,6 +25,9 @@ struct OnFirstAppear: ViewModifier {
 }
 
 extension View {
+    /// Runs the given action only the first time this view appears.
+    /// - Parameter action: The action to perform.
+    /// - Returns: A view that triggers the action on its first appearance.
     func onFirstAppear(perform action: @escaping () -> Void) -> some View {
         self.modifier(OnFirstAppear(action: action))
     }

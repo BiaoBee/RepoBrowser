@@ -5,12 +5,12 @@ RepoBrowser is an iPhone app that allows you to browse GitHub repositories with 
 ## Features
 
 - **Explore Repositories:** 
-  - Browse GitHub repositories by keyword.
+  - Browse GitHub repositories.
   - Filter by Stars, Language, and License.
   - Paginated and infinite scroll for seamless browsing.
-  - Display error messages for failed searches or network issues.
-- **Repository Details:** View repository information, including description, stars, forks, and owner details.
-- **Bookmarking:** Save repositories to your bookmarks for easy access later.
+  - Display error messages for failed API calls.
+- **Repository Details:** View repository information in detail.
+- **Bookmarking:** Bookmark/Unbookmark repositories for easy access later.
 
 ## Getting Started
 
@@ -42,3 +42,16 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 ## License
 
 This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
+
+## Areas To Improve
+- Features:
+    - Search
+    - Sync stored data
+- Coding:
+    - Some view are not testable
+    - UT coverage
+## Architecture Considerations
+- Grouping vs Filtering
+- Used search API 
+- 
