@@ -1,16 +1,16 @@
 # RepoBrowser
 
-RepoBrowser is an iPhone app that allows you to browse GitHub repositories with ease. With a clean and intuitive interface, you can search for repositories, view details, and bookmark your favorites for quick access.
+RepoBrowser is an iPhone app that makes it easy to browse GitHub repositories. With a clean, intuitive interface, you can filter for repositories, view detailed information, and bookmark your favorites for quick access.
 
 ## Features
 
-- **Explore Repositories:** 
+- **Explore Repositories:**  
   - Browse GitHub repositories.
-  - Filter by Stars, Language, and License.
-  - Paginated and infinite scroll for seamless browsing.
-  - Display error messages for failed API calls.
-- **Repository Details:** View repository information in detail.
-- **Bookmarking:** Bookmark/Unbookmark repositories for easy access later.
+  - Filter results by Stars, Language, and License.
+  - Enjoy seamless browsing with paginated and infinite scroll.
+  - Clear error messages are displayed if something goes wrong.
+- **Repository Details:** Dive into detailed information for each repository.
+- **Bookmarking:** Quickly bookmark or unbookmark repositories for easy access later.
 
 ## Getting Started
 
@@ -30,10 +30,19 @@ RepoBrowser is an iPhone app that allows you to browse GitHub repositories with 
 
 ## Usage
 
-1. **Explore:** Launch the app to see trending repositories or use the search bar to find specific repositories.
-2. **View Details:** Tap on any repository to see more information, including the owner’s avatar and repository stats.
-3. **Bookmark:** Tap the bookmark icon to save repositories you want to revisit.
-4. **Bookmarks Tab:** Access your saved repositories from the Bookmarks tab.
+1. **Explore:**  
+   - Launch the app to view repositories.
+   - Tap the filter icon (top left) to apply filters.
+   - Tap the reload button (top right) to refresh repositories with the current filters.
+   - Scroll to the bottom for infinite scroll; the next page loads automatically.
+   - If infinite scroll fails, tap `Load More` to manually fetch more results.
+   - Any errors will be shown at the top of the screen.
+2. **Repository Details:**  
+   - Tap any repository to view more details.
+   - Tap the bookmark icon to save repositories you want to revisit.
+3. **Bookmarks Tab:**  
+   - Access your saved repositories from the Bookmarks tab.
+   - Remove bookmarks by tapping the `Unbookmark` button.
 
 ## Contributing
 
@@ -43,15 +52,12 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
+## Areas for Improvement
 
-## Areas To Improve
-- Features:
-    - Search
-    - Sync stored data
-- Coding:
-    - Some view are not testable
-    - UT coverage
-## Architecture Considerations
-- Grouping vs Filtering
-- Used search API 
-- 
+- **Features:**
+    - Add a search feature.
+    - Automatically update stored bookmarks if repository data changes.
+- **Code:**
+    - Improve testability of some views.
+    - Increase unit test coverage.
+    - SwiftData is used with SwiftUI, which currently makes bookmark storage untestable.
